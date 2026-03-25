@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Osama Muzaffar — Senior Android Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --border: rgba(255,255,255,0.07);
+    --glow: rgba(0,229,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  .hero-bg-circle.c1 {
+    width: 600px; height: 600px;
+    background: rgba(0,229,255,0.07);
+    top: -100px; right: -100px;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+  .hero-bg-circle.c2 {
+    width: 400px; height: 400px;
+    background: rgba(124,58,237,0.08);
+    bottom: -50px; left: 200px;
+    animation: drift 10s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes drift {
+    from { transform: translate(0,0); }
+    to { transform: translate(30px, 30px); }
+  }
+
+  .hero-content { max-width: 900px; position: relative; z-index: 1; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s ease forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.35s ease forwards;
+  }
+  .hero-name span { color: var(--accent); }
+
+  .hero-role {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s ease forwards;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 580px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.65s ease forwards;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s ease forwards;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 500;
+  }
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 30px var(--glow);
+  }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: transparent;
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-stats {
+    position: absolute; right: 4rem; bottom: 4rem;
+    display: flex; flex-direction: column; gap: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 1s ease forwards;
+  }
+  .stat { text-align: right; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 4rem; position: relative; z-index: 1; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--surface); }
+
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 3.5rem 2.5rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute; left: -4px; top: 6px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+
+  .tl-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .tl-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .tl-company {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .tl-points {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .tl-points li {
+    font-size: 0.9rem;
+    color: #a0a0b8;
+    line-height: 1.6;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .tl-points li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--accent3);
+    font-size: 0.75rem;
+  }
+
+  /* ── PROJECTS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,255,0.04), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
+  .project-card:hover::before { opacity: 1; }
+
+  .project-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+  .project-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .project-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .project-link:hover { gap: 0.7rem; }
+  .project-link.na { color: var(--muted); pointer-events: none; }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--surface); }
+
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .skill-category-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .skill-tags {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-bottom: 2.5rem;
+  }
+  .skill-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: rgba(255,255,255,0.02);
+    transition: all 0.2s;
+  }
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,229,255,0.05);
+  }
+  .skill-tag.highlight {
+    border-color: rgba(0,229,255,0.4);
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+  }
+
+  /* ── EDUCATION ── */
+  .edu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  .edu-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+  }
+  .edu-degree {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .edu-inst { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .edu-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  /* ── CONTACT ── */
+  #contact { text-align: center; }
+  .contact-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .contact-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .contact-sub {
+    color: var(--muted);
+    margin-bottom: 3rem;
+    line-height: 1.7;
+  }
+  .contact-links {
+    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .contact-link {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .contact-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.05);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  footer span { color: var(--accent); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { padding: 7rem 1.5rem 3rem; }
+    .hero-stats { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .skills-layout { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">OM.dev</div>
+  <ul class="nav-links">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Available for Opportunities</div>
+    <h1 class="hero-name">Osama<br/><span>Muzaffar</span></h1>
+    <p class="hero-role">Senior Android Developer</p>
+    <p class="hero-desc">
+      Specializing in Kotlin, Jetpack Compose & Kotlin Multiplatform. Building high-performance, user-centric Android applications from architecture to Play Store deployment with 4+ years of hands-on experience.
+    </p>
+    <div class="hero-cta">
+      <a href="mailto:osamaofficial1122@gmail.com" class="btn btn-primary">✉ Get in Touch</a>
+      <a href="https://www.linkedin.com/in/osama-muzaffar78" target="_blank" class="btn btn-outline">↗ LinkedIn</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">4+</div>
+      <div class="stat-label">Years Exp.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Companies</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Live Apps</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Experience</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="timeline">
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">Feb 2025 — Present</div>
+      <div class="tl-role">Senior Android Developer</div>
+      <div class="tl-company">Grace Technologies</div>
+      <ul class="tl-points">
+        <li>Built and optimized Android apps using Jetpack Compose, Kotlin, and modern Android architecture.</li>
+        <li>Integrated APIs, improved app stability, and ensured smooth Play Store releases.</li>
+        <li>Collaborated across teams to deliver feature-rich, high-performance applications.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">Jan 2025 — Feb 2025</div>
+      <div class="tl-role">Senior Android Developer</div>
+      <div class="tl-company">Maximus Technologies</div>
+      <ul class="tl-points">
+        <li>Designed and developed scalable Android apps with modern frameworks like Jetpack Compose.</li>
+        <li>Integrated third-party SDKs, optimized app performance, and enhanced UI/UX.</li>
+        <li>Led development cycles, mentored junior developers and conducted code reviews.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">— — —</div>
+      <div class="tl-role">Senior Android Developer</div>
+      <div class="tl-company">The IT Zon</div>
+      <ul class="tl-points">
+        <li>Developed and delivered Android applications with a strong focus on code quality and performance.</li>
+        <li>Collaborated with product and design teams to ship user-centric features on tight timelines.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">Feb 2023 — Dec 2024</div>
+      <div class="tl-role">Senior Android Developer</div>
+      <div class="tl-company">Solfreaks</div>
+      <ul class="tl-points">
+        <li>Led development of high-performance Android apps, improving UI/UX and user engagement.</li>
+        <li>Integrated third-party APIs and services including AdMob and Firebase.</li>
+        <li>Implemented Jetpack Compose and Kotlin Coroutines for performance optimization.</li>
+        <li>Conducted code reviews and mentored junior developers.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-period">Jun 2021 — Feb 2023</div>
+      <div class="tl-role">Android Developer</div>
+      <div class="tl-company">Compulogic Standard Solutions</div>
+      <ul class="tl-points">
+        <li>Developed and maintained Android applications with focus on client requirements and QA.</li>
+        <li>Worked on Android SDK components: Room, Retrofit, and LiveData.</li>
+        <li>Optimized background services and reduced memory consumption.</li>
+        <li>Participated in Agile cycles and released updates to the Google Play Store.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-icon">🏠</div>
+      <div class="project-title">Draw Floor — 3D Floor Plan</div>
+      <div class="project-desc">A versatile floor plan design tool for creating detailed 2D and 3D layouts. Features a user-friendly drag-and-drop interface for precise interior visualization and planning.</div>
+      <a href="https://play.google.com/store/apps/details?id=com.floor.planner" target="_blank" class="project-link">Play Store ↗</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon">🔍</div>
+      <div class="project-title">File Recovery — Data Recover</div>
+      <div class="project-desc">A powerful recovery app that retrieves lost or deleted photos, videos, and files from Android devices by scanning internal and external storage efficiently.</div>
+      <a href="https://play.google.com/store/apps/details?id=com.applicationmasters.recoverphotos" target="_blank" class="project-link">Play Store ↗</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon">🚗</div>
+      <div class="project-title">OBD2 Car Scanner Tool</div>
+      <div class="project-desc">Advanced vehicle diagnostic tool using OBD2 protocols. Provides real-time data, error codes, and maintenance suggestions for both car owners and mechanics.</div>
+      <a href="https://play.google.com/store/apps/details?id=com.mumbo.obdiiscannerassistant" target="_blank" class="project-link">Play Store ↗</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon">🔒</div>
+      <div class="project-title">Calculator Vault</div>
+      <div class="project-desc">A secure vault app disguised as a regular calculator to protect private photos, videos, and files. Stealth-mode privacy protection with full file management.</div>
+      <a class="project-link na">Coming Soon</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-icon">🌍</div>
+      <div class="project-title">Earth Map — Satellite View Live</div>
+      <div class="project-desc">A global navigation app featuring live satellite maps, GPS, street view, weather updates, and real-time location tracking — all in one package.</div>
+      <a href="https://play.google.com/store/apps/details?id=com.earthmap.worldmap.satelliteview.livemaps.streetview.weather.gps.navigation.maps" target="_blank" class="project-link">Play Store ↗</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Skills</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-layout">
+    <div class="reveal">
+      <div class="skill-category-title">Core Development</div>
+      <div class="skill-tags">
+        <span class="skill-tag highlight">Kotlin</span>
+        <span class="skill-tag highlight">Jetpack Compose</span>
+        <span class="skill-tag highlight">Android SDK</span>
+        <span class="skill-tag highlight">KMP / Compose Multiplatform</span>
+        <span class="skill-tag">Java</span>
+        <span class="skill-tag">Kotlin Coroutines</span>
+        <span class="skill-tag">XML Layouts</span>
+        <span class="skill-tag">RecyclerView</span>
+        <span class="skill-tag">ConstraintLayout</span>
+        <span class="skill-tag">Room Database</span>
+        <span class="skill-tag">Retrofit</span>
+        <span class="skill-tag">LiveData</span>
+      </div>
+
+      <div class="skill-category-title">Architecture & Tools</div>
+      <div class="skill-tags">
+        <span class="skill-tag highlight">MVVM</span>
+        <span class="skill-tag">MVI</span>
+        <span class="skill-tag">Clean Architecture</span>
+        <span class="skill-tag">Coil</span>
+        <span class="skill-tag">Ktor</span>
+        <span class="skill-tag">REST APIs</span>
+        <span class="skill-tag">SQLite</span>
+        <span class="skill-tag">JSON</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">PHP</span>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="skill-category-title">Monetization & Analytics</div>
+      <div class="skill-tags">
+        <span class="skill-tag highlight">AdMob</span>
+        <span class="skill-tag highlight">Firebase</span>
+        <span class="skill-tag">Mediation Networks</span>
+        <span class="skill-tag">In-App Billing</span>
+        <span class="skill-tag">Firebase Remote Config</span>
+        <span class="skill-tag">Firebase Analytics</span>
+        <span class="skill-tag">Meta Conversion API</span>
+        <span class="skill-tag">Push Notifications</span>
+      </div>
+
+      <div class="skill-category-title">Deployment & Others</div>
+      <div class="skill-tags">
+        <span class="skill-tag highlight">Google Play Store</span>
+        <span class="skill-tag">Agile / Scrum</span>
+        <span class="skill-tag">Code Reviews</span>
+        <span class="skill-tag">Team Mentoring</span>
+        <span class="skill-tag">Android 15 / Edge-to-Edge</span>
+        <span class="skill-tag">OBD2 / BLE</span>
+        <span class="skill-tag">Lottie Animations</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Education</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-grid">
+    <div class="edu-card reveal">
+      <div class="edu-degree">Bachelor of Science — Computer Science</div>
+      <div class="edu-inst">Federal Urdu University, Islamabad</div>
+      <div class="edu-period">Oct 2018 — Sep 2022</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-degree">I.C.S (Intermediate)</div>
+      <div class="edu-inst">Islamabad Model Postgraduate College, H-8/2</div>
+      <div class="edu-period">May 2016 — April 2018</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-degree">Matriculation</div>
+      <div class="edu-inst">Islamabad Model School For Boys, G-8/1</div>
+      <div class="edu-period">April 2016 — March 2018</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <h2 class="contact-heading">Let's Build<br/>Something Great.</h2>
+    <p class="contact-sub">Open to senior Android developer roles, freelance projects, and collaborations. Based in Islamabad — available remotely worldwide.</p>
+    <div class="contact-links">
+      <a href="mailto:osamaofficial1122@gmail.com" class="contact-link">✉ Email</a>
+      <a href="https://www.linkedin.com/in/osama-muzaffar78" target="_blank" class="contact-link">↗ LinkedIn</a>
+      <a href="https://play.google.com/store/apps/dev?id=your-dev-id" target="_blank" class="contact-link">▶ Play Store</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span>Osama Muzaffar</span>. All rights reserved.</p>
+  <p>Islamabad, Pakistan <span>·</span> Senior Android Developer</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
